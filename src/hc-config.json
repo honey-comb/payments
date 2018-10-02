@@ -1,0 +1,14 @@
+{
+    "general": {
+        "packageName": "Payments",
+        "sequence": 0,
+        "namespace": "\\Vagrant\\HoneyComb\\Payments\\"
+    },
+    "formData": {},
+    "adminMenu": [],
+    "seeder": "",
+    "routes": [],
+    "acl": {
+        "permissions": []
+    }
+}
