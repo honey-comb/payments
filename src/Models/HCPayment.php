@@ -60,7 +60,7 @@ class HCPayment extends HCUuidSoftModel
         'amount',
         'currency',
         'configuration_value',
-        'order_data',
+        'order_number',
         'invoice_id',
     ];
 

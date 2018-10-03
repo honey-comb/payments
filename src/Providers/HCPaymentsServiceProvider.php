@@ -35,6 +35,7 @@ use HoneyComb\Payments\Repositories\HCPaymentRepository;
 use HoneyComb\Payments\Services\HCMakePaymentService;
 use HoneyComb\Payments\Services\HCMakePayseraPaymentService;
 use HoneyComb\Starter\Providers\HCBaseServiceProvider;
+use Illuminate\Routing\Router;
 
 /**
  * Class HCPaymentsServiceProvider
@@ -59,7 +60,25 @@ class HCPaymentsServiceProvider extends HCBaseServiceProvider
      *
      * @var string
      */
-    protected $namespace = '\HoneyComb\Payments\Http\Controllers';
+    protected $namespace = 'HoneyComb\Payments\Http\Controllers';
+
+    /**
+     * Provider name
+     *
+     * @var string
+     */
+    protected $packageName = 'HCPayments';
+
+    /**
+     * @param Router $router
+     * @throws \Exception
+     */
+    public function boot(Router $router): void
+    {
+        parent::boot($router);
+
+        $this->loadViews();
+    }
 
     /**
      *

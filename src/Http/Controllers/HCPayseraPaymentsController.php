@@ -29,37 +29,41 @@ declare(strict_types = 1);
 
 namespace HoneyComb\Payments\Http\Controllers;
 
-use App\Enum\HCPaymentStatusEnum;
 use Cache;
+use HoneyComb\Payments\Enum\HCPaymentStatusEnum;
 use HoneyComb\Payments\Events\HCPaymentCanceled;
 use HoneyComb\Payments\Events\HCPaymentCompleted;
 use HoneyComb\Payments\Repositories\HCPaymentRepository;
 use HoneyComb\Payments\Services\HCMakePayseraPaymentService;
 use Illuminate\Database\Connection;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Illuminate\View\View;
 
 /**
- * Class HCPaymentsController
+ * Class HCPayseraPaymentsController
  * @package HoneyComb\Payments\http\controllers
  */
-class HCPaymentsController extends Controller
+class HCPayseraPaymentsController extends Controller
 {
-    /**
-     * @var HCPaymentRepository
-     */
-    private $paymentRepository;
     /**
      * @var Connection
      */
-    private $connection;
+    protected $connection;
+
+    /**
+     * @var HCPaymentRepository
+     */
+    protected $paymentRepository;
+
     /**
      * @var HCMakePayseraPaymentService
      */
-    private $payseraPaymentService;
+    protected $payseraPaymentService;
 
     /**
-     * HCPaymentsController constructor.
+     * HCPayseraPaymentsController constructor.
      * @param Connection $connection
      * @param HCPaymentRepository $paymentRepository
      * @param HCMakePayseraPaymentService $payseraPaymentService
@@ -76,43 +80,50 @@ class HCPaymentsController extends Controller
 
     /**
      * @param string $paymentId
+     * @return View
      * @throws \ReflectionException
      */
-    public function cancel(string $paymentId): void
+    public function cancel(string $paymentId): View
     {
-        $payment = $this->paymentRepository->findOrFail($paymentId);
+        $payment = $this->paymentRepository->find($paymentId);
 
-        if ($payment->status === HCPaymentStatusEnum::pending()->id()) {
+        if ($payment && $payment->status === HCPaymentStatusEnum::pending()->id()) {
             $payment->update([
                 'status' => HCPaymentStatusEnum::canceled()->id(),
             ]);
 
             event(new HCPaymentCanceled($payment));
         }
+
+        return view(config('payments.views.cancel'));
     }
 
     /**
      * @param string $paymentId
+     * @return View
      * @throws \ReflectionException
      */
-    public function accept(string $paymentId): void
+    public function accept(string $paymentId): View
     {
-        $payment = $this->paymentRepository->findOrFail($paymentId);
+        $payment = $this->paymentRepository->find($paymentId);
 
-        if ($payment->status === HCPaymentStatusEnum::pending()->id()) {
+        if ($payment && $payment->status === HCPaymentStatusEnum::pending()->id()) {
             $payment->update([
                 'status' => HCPaymentStatusEnum::completed()->id(),
             ]);
 
             event(new HCPaymentCompleted($payment));
         }
+
+        return view(config('payments.views.accept'));
     }
 
     /**
      * @param Request $request
+     * @return Response
      * @throws \Exception
      */
-    public function callback(Request $request): void
+    public function callback(Request $request): Response
     {
         $this->connection->beginTransaction();
 
@@ -120,17 +131,23 @@ class HCPaymentsController extends Controller
             $response = $this->payseraPaymentService->parseParams($request->all());
 
             if ($response['status'] == 1) {
-                $payment = $this->paymentRepository->findOrFail($response['orderid']);
+                $payment = $this->paymentRepository
+                    ->where([
+                        'order_number' => $response['orderid']
+                    ])
+                    ->first();
 
-                $payment->update([
-                    'configuration_value' => $response
-                ]);
+                if ($payment) {
+                    $payment->update([
+                        'configuration_value' => $response,
+                    ]);
 
-                if ($payment->status === HCPaymentStatusEnum::completed()->id()) {
-                    return response('OK', 200);
+                    if ($payment->status === HCPaymentStatusEnum::completed()->id()) {
+                        return response('OK', 200);
+                    }
+
+                    $this->payseraPaymentService->validateCallback($payment, $response);
                 }
-
-                $this->payseraPaymentService->validateCallback($payment, $response);
 
                 $this->connection->commit();
 
@@ -140,6 +157,9 @@ class HCPaymentsController extends Controller
             $this->connection->rollback();
 
             logger()->error($e->getMessage(), $e->getTrace());
+            throw new \Exception($e->getMessage());
         }
+
+        return response('OK', 200);
     }
 }

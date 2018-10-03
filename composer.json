@@ -45,6 +45,13 @@
             "Tests\\": "tests/"
         }
     },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "HoneyComb\\Payments\\Providers\\HCPaymentsServiceProvider"
+            ]
+        }
+    },
     "scripts": {
         "test": [
             "paratest -p4 --colors"

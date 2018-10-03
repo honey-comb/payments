@@ -29,7 +29,7 @@ declare(strict_types = 1);
 
 namespace HoneyComb\Payments\Services;
 
-use App\Enum\HCPaymentStatusEnum;
+use HoneyComb\Payments\Enum\HCPaymentStatusEnum;
 use HoneyComb\Payments\Models\HCPayment;
 use HoneyComb\Payments\Repositories\HCPaymentRepository;
 
@@ -67,7 +67,7 @@ class HCPaymentService
      * @param string $currency
      * @param string $reasonId
      * @param string $methodId
-     * @param string $orderData
+     * @param string $orderNumber
      * @param string|null $paymentType
      * @return HCPayment
      * @throws \ReflectionException
@@ -77,9 +77,20 @@ class HCPaymentService
         string $currency,
         string $reasonId,
         string $methodId,
-        string $orderData,
+        string $orderNumber,
         string $paymentType = null
     ): HCPayment {
+        $payment = $this->repository
+            ->makeQuery()
+            ->where([
+                'order_number' => $orderNumber
+            ])
+            ->first();
+
+        if($payment){
+            throw new \Exception(trans('HCPayments::payments.message.order_already_exist'));
+        }
+
         return $this->repository
             ->create([
                 'status' => HCPaymentStatusEnum::pending()->id(),
@@ -88,7 +99,7 @@ class HCPaymentService
                 'method_id' => $methodId,
                 'reason_id' => $reasonId,
                 'payment_type' => $paymentType,
-                'order_data' => $orderData,
+                'order_number' => $orderNumber,
             ]);
     }
 

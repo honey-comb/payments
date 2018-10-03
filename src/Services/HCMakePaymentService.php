@@ -60,15 +60,14 @@ abstract class HCMakePaymentService implements PaymentContract
     ): string;
 
     /**
-     * @param string $amount
-     * @param int $numberCountAfterComma
+     * @param $amount
      * @return int
      */
-    public function convertAmountToCents(string $amount, int $numberCountAfterComma = 0): int
+    public function convertAmountToCents(float $amount): int
     {
-        $amount = str_replace(",", ".", $amount);
+        $amount = (float)str_replace(",", ".", (string)$amount);
 
-        return intval(number_format($amount, $numberCountAfterComma, '', ''));
+        return intval(number_format($amount, 2, '', ''));
     }
 
     /**

@@ -39,11 +39,10 @@ interface PaymentContract
     ): string;
 
     /**
-     * @param string $amount
-     * @param int $numberCountAfterComma
+     * @param $amount
      * @return int
      */
-    public function convertAmountToCents(string $amount, int $numberCountAfterComma = 0): int;
+    public function convertAmountToCents(float $amount): int;
 
     /**
      * @param HCPayment $payment

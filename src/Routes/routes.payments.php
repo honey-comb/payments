@@ -28,14 +28,12 @@
 declare(strict_types = 1);
 
 Route::middleware('web')
-    ->name('payments.')
+    ->name('payments.paysera.')
     ->prefix('payments')
     ->group(
         function () {
-            Route::get('cancel/{paymentId}', 'HCPaymentsController@cancel')->name('cancel');
-            Route::get('accept/{paymentId}', 'HCPaymentsController@accept')->name('accept');
-            Route::get('callback', 'HCPaymentsController@callback')->name('callback');
+            Route::get('cancel/{paymentId}', 'HCPayseraPaymentsController@cancel')->name('cancel');
+            Route::get('accept/{paymentId}', 'HCPayseraPaymentsController@accept')->name('accept');
+            Route::get('callback', 'HCPayseraPaymentsController@callback')->name('callback');
         }
     );
-
-

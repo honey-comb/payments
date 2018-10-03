@@ -3,15 +3,15 @@
 return [
     'paysera' => [
         'project_id' => env('PAYSERA_PROJECT_ID', ''),
-        'sign_password' => env('PAYSERA_SIGN_PASSWORD', ''),
+        'sign_password' => env('PAYSERA_SIGNATURE', ''),
 
         'lang' => env('PAYSERA_LANGUAGE_CODE', 'lit'),
         'currency' => env('PAYSERA_CURRENCY', 'EUR'),
         'country_code' => env('PAYSERA_COUNTRY_CODE', 'lt'),
 
-        'cancel_url' => env('PAYSERA_CANCEL_URL'),
-        'accept_url' => env('PAYSERA_ACCEPT_URL'),
-        'callback_url' => env('PAYSERA_CALLBACK_URL'),
+        'cancel_route' => env('PAYSERA_CANCEL_ROUTE', 'payments.paysera.cancel'),
+        'accept_route' => env('PAYSERA_ACCEPT_ROUTE', 'payments.paysera.accept'),
+        'callback_route' => env('PAYSERA_CALLBACK_ROUTE', 'payments.paysera.callback'),
 
         'payment_groups' => [
             'e-banking',
@@ -21,4 +21,9 @@ return [
 
         'test' => ENV('PAYSERA_TEST', 1),
     ],
+
+    'views' => [
+        'cancel' => env('PAYSERA_CANCEL_BLADE', 'HCPayments::cancel'),
+        'accept' => env('PAYSERA_ACCEPT_BLADE', 'HCPayments::accept'),
+    ]
 ];

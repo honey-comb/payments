@@ -29,7 +29,7 @@ declare(strict_types = 1);
 
 namespace HoneyComb\Payments\Database\Seeds;
 
-use App\Enum\HCPaymentMethodEnum;
+use HoneyComb\Payments\Enum\HCPaymentMethodEnum;
 use HoneyComb\Payments\Repositories\HCPaymentMethodRepository;
 use Illuminate\Database\Seeder;
 

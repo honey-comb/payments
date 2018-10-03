@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace HoneyComb\Payments\Services;
 
-use App\Enum\HCPaymentMethodEnum;
+use HoneyComb\Payments\Enum\HCPaymentMethodEnum;
 use HoneyComb\Payments\Events\HCPaymentCreated;
 use HoneyComb\Payments\Models\HCPayment;
 use WebToPay;
@@ -87,8 +87,7 @@ class HCMakePayseraPaymentService extends HCMakePaymentService
      * @param string|null $paymentType
      * @param array $options
      * @return string
-     * @throws \ReflectionException
-     * @throws \WebToPayException
+     * @throws \Exception
      */
     public function makePayment(
         float $amount,
@@ -121,19 +120,22 @@ class HCMakePayseraPaymentService extends HCMakePaymentService
                 'projectid' => $projectId,
                 'sign_password' => $signPassword,
 
-                'orderid' => $payment->id,
-                'amount' => $this->convertAmountToCents((string)$amount),
+                'orderid' => $orderNumber,
+                'amount' => $this->convertAmountToCents($amount),
                 'country' => $country,
                 'currency' => $currency,
                 'lang' => $lang,
+                'payment' => $paymentType,
 
                 'test' => $testMode,
             ];
 
+            logger()->info(json_encode($paymentData));
+
             $paymentData = array_merge($paymentData, [
-                'cancelurl' => route('payments.cancel', $payment->id),
-                'accepturl' => route('payments.accept', $payment->id),
-                'callbackurl' => route('payments.callback', $payment->id),
+                'cancelurl' => route(config('payments.paysera.cancel_route'), $payment->id),
+                'accepturl' => route(config('payments.paysera.accept_route'), $payment->id),
+                'callbackurl' => route(config('payments.paysera.callback_route')),
 
                 'p_email' => array_get($options, 'email', ''),
                 'p_firstname' => array_get($options, 'first_name', ''),
@@ -158,7 +160,7 @@ class HCMakePayseraPaymentService extends HCMakePaymentService
     /**
      * @param array $request
      * @return array
-     * @throws \WebToPayException
+     * @throws \Exception
      */
     public function parseParams(array $request): array
     {
@@ -188,7 +190,7 @@ class HCMakePayseraPaymentService extends HCMakePaymentService
      */
     public function validateCallback(HCPayment $payment, array $response): void
     {
-        if ($this->convertAmountToCents($response['payamount']) < $this->convertAmountToCents($payment->amount, 2)) {
+        if ($this->convertAmountToCents((float) $response['payamount']) < $this->convertAmountToCents((float) $payment->amount, 2)) {
             $errorMessage = trans('HCPayments::payments.message.bad_amount', ['amount' => $response['amount']]);
 
             logger()->error($errorMessage);

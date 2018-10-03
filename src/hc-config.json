@@ -1,13 +1,15 @@
 {
     "general": {
-        "packageName": "Payments",
+        "packageName": "HCPayments",
         "sequence": 0,
-        "namespace": "\\Vagrant\\HoneyComb\\Payments\\"
+        "namespace": "\\HoneyComb\\Payments\\"
     },
     "formData": {},
     "adminMenu": [],
-    "seeder": "",
-    "routes": [],
+    "seeder": "HoneyComb\\Payments\\Database\\Seeds\\HCPaymentsSeeder",
+    "routes": [
+        "Routes\/routes.payments.php"
+    ],
     "acl": {
         "permissions": []
     }

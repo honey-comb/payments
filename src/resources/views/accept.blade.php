@@ -1,0 +1,1 @@
+{{ trans('HCPayments::payments.message.payment_accepted') }}
