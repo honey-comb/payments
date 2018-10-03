@@ -21,7 +21,7 @@
     "repositories": [],
     "require": {
         "php": ">=7.1.0",
-        "laravel/framework": "5.5.*",
+        "laravel/framework": "5.6.*",
         "honey-comb/starter": "*",
         "honey-comb/core": "*",
         "honey-comb/resources": "*"
