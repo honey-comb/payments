@@ -9,7 +9,7 @@ return [
 
     'method' => [
         'paysera' => 'Paysera',
-        'paypal' => 'Paypal'
+        'paypal' => 'Paypal',
     ],
 
     'message' => [

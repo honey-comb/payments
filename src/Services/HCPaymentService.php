@@ -83,11 +83,11 @@ class HCPaymentService
         $payment = $this->repository
             ->makeQuery()
             ->where([
-                'order_number' => $orderNumber
+                'order_number' => $orderNumber,
             ])
             ->first();
 
-        if($payment){
+        if ($payment) {
             throw new \Exception(trans('HCPayments::payments.message.order_already_exist'));
         }
 

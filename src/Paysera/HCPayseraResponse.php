@@ -62,7 +62,7 @@ class HCPayseraResponse implements PayseraResponseContract
         $payment = $this->paymentRepository->find($paymentId);
 
         return view('HCPayments::accept', ['payment' => $payment]);
-}
+    }
 
     /**
      * @param string $paymentId
