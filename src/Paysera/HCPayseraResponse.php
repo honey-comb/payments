@@ -25,34 +25,53 @@
  * https://innovationbase.eu
  */
 
-namespace HoneyComb\Payments\Repositories;
+declare(strict_types = 1);
 
-use HoneyComb\Payments\Models\HCPayment;
-use HoneyComb\Starter\Repositories\HCBaseRepository;
-use HoneyComb\Starter\Repositories\Traits\HCQueryBuilderTrait;
+namespace HoneyComb\Payments\Paysera;
+
+use HoneyComb\Payments\Contracts\PayseraResponseContract;
+use HoneyComb\Payments\Repositories\HCPaymentRepository;
+use Illuminate\View\View;
 
 /**
- * Class HCPaymentRepository
- * @package HoneyComb\Payments\Repositories
+ * Class HCPayseraResponse
+ * @package HoneyComb\Payments\Paysera
  */
-class HCPaymentRepository extends HCBaseRepository
+class HCPayseraResponse implements PayseraResponseContract
 {
-    use HCQueryBuilderTrait;
+    /**
+     * @var HCPaymentRepository
+     */
+    private $paymentRepository;
 
     /**
-     * @return string
+     * HCPayseraResponse constructor.
+     * @param HCPaymentRepository $paymentRepository
      */
-    public function model(): string
+    public function __construct(HCPaymentRepository $paymentRepository)
     {
-        return HCPayment::class;
+        $this->paymentRepository = $paymentRepository;
     }
 
     /**
-     * @param string $orderNumber
-     * @return HCPayment|null
+     * @param string $paymentId
+     * @return View
      */
-    public function findByOrderNumber(string $orderNumber): ?HCPayment
+    public function acceptResponse(string $paymentId): View
     {
-        return $this->findOneBy(['order_number' => $orderNumber]);
+        $payment = $this->paymentRepository->find($paymentId);
+
+        return view('HCPayments::accept', ['payment' => $payment]);
+}
+
+    /**
+     * @param string $paymentId
+     * @return View
+     */
+    public function cancelResponse(string $paymentId): View
+    {
+        $payment = $this->paymentRepository->find($paymentId);
+
+        return view('HCPayments::cancel', ['payment' => $payment]);
     }
 }

@@ -133,9 +133,9 @@ class HCMakePayseraPaymentService extends HCMakePaymentService
             logger()->info(json_encode($paymentData));
 
             $paymentData = array_merge($paymentData, [
-                'cancelurl' => route(config('payments.paysera.cancel_route'), $payment->id),
-                'accepturl' => route(config('payments.paysera.accept_route'), $payment->id),
-                'callbackurl' => route(config('payments.paysera.callback_route')),
+                'cancelurl' => route('payments.paysera.cancel', $payment->id),
+                'accepturl' => route('payments.paysera.accept', $payment->id),
+                'callbackurl' => route('payments.paysera.callback.get'),
 
                 'p_email' => array_get($options, 'email', ''),
                 'p_firstname' => array_get($options, 'first_name', ''),
@@ -194,6 +194,7 @@ class HCMakePayseraPaymentService extends HCMakePaymentService
             $errorMessage = trans('HCPayments::payments.message.bad_amount', ['amount' => $response['amount']]);
 
             logger()->error($errorMessage);
+
             throw new \Exception($errorMessage);
         }
     }

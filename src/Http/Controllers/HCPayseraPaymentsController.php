@@ -95,35 +95,24 @@ class HCPayseraPaymentsController extends Controller
             event(new HCPaymentCanceled($payment));
         }
 
-        return view(config('payments.views.cancel'));
+        return app(config('payments.paysera.responseClass'))->cancelResponse($paymentId);
     }
 
     /**
      * @param string $paymentId
      * @return View
-     * @throws \ReflectionException
      */
     public function accept(string $paymentId): View
     {
-        $payment = $this->paymentRepository->find($paymentId);
-
-        if ($payment && $payment->status === HCPaymentStatusEnum::pending()->id()) {
-            $payment->update([
-                'status' => HCPaymentStatusEnum::completed()->id(),
-            ]);
-
-            event(new HCPaymentCompleted($payment));
-        }
-
-        return view(config('payments.views.accept'));
+        return app(config('payments.paysera.responseClass'))->acceptResponse($paymentId);
     }
 
     /**
      * @param Request $request
-     * @return Response
+     * @return Response|null
      * @throws \Exception
      */
-    public function callback(Request $request): Response
+    public function callback(Request $request): ?Response
     {
         $this->connection->beginTransaction();
 
@@ -131,35 +120,44 @@ class HCPayseraPaymentsController extends Controller
             $response = $this->payseraPaymentService->parseParams($request->all());
 
             if ($response['status'] == 1) {
-                $payment = $this->paymentRepository
-                    ->where([
-                        'order_number' => $response['orderid']
-                    ])
-                    ->first();
+                $payment = $this->paymentRepository->findByOrderNumber($response['orderid']);
 
-                if ($payment) {
-                    $payment->update([
-                        'configuration_value' => $response,
-                    ]);
-
-                    if ($payment->status === HCPaymentStatusEnum::completed()->id()) {
-                        return response('OK', 200);
-                    }
-
-                    $this->payseraPaymentService->validateCallback($payment, $response);
+                if (is_null($payment)) {
+                    throw new \Exception('Payment found! Order number - ' . $response['orderid']);
                 }
+
+                if ($payment->isCanceled()) {
+                    throw new \Exception('Trying to confirm canceled payment - ' . $response['orderid']);
+                }
+
+                if ($payment->isCompleted()) {
+                    return response('OK', 200);
+                }
+
+                $this->payseraPaymentService->validateCallback($payment, $response);
+
+                $payment->update([
+                    'status' => HCPaymentStatusEnum::completed()->id(),
+                    'configuration_value' => $response,
+                ]);
 
                 $this->connection->commit();
 
+                event(new HCPaymentCompleted($payment));
+
                 return response('OK', 200);
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $exception) {
             $this->connection->rollback();
 
-            logger()->error($e->getMessage(), $e->getTrace());
-            throw new \Exception($e->getMessage());
+            report($exception);
+
+            throw new \Exception($exception->getMessage());
         }
 
-        return response('OK', 200);
+        logger()->info($response);
+
+        // return null if paysera response is not equal to 1
+        return null;
     }
 }

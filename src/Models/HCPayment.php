@@ -29,6 +29,7 @@ declare(strict_types = 1);
 
 namespace HoneyComb\Payments\Models;
 
+use HoneyComb\Payments\Enum\HCPaymentStatusEnum;
 use HoneyComb\Starter\Models\HCUuidSoftModel;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -85,5 +86,32 @@ class HCPayment extends HCUuidSoftModel
     public function method(): HasOne
     {
         return $this->hasOne(HCPaymentMethod::class, 'id', 'method_id');
+    }
+
+    /**
+     * @return bool
+     * @throws \ReflectionException
+     */
+    public function IsPending(): bool
+    {
+        return $this->status == HCPaymentStatusEnum::pending()->id();
+    }
+
+    /**
+     * @return bool
+     * @throws \ReflectionException
+     */
+    public function IsCompleted(): bool
+    {
+        return $this->status == HCPaymentStatusEnum::completed()->id();
+    }
+
+    /**
+     * @return bool
+     * @throws \ReflectionException
+     */
+    public function IsCanceled(): bool
+    {
+        return $this->status == HCPaymentStatusEnum::canceled()->id();
     }
 }

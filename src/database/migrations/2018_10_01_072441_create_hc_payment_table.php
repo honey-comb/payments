@@ -23,6 +23,7 @@ class CreateHcPaymentTable extends Migration
             $table->datetime('deleted_at')->nullable();
 
             $table->uuid('id')->unique();
+            $table->uuid('invoice_id')->nullable();
             $table->enum('status', ['pending', 'completed', 'canceled'])->index();
             $table->string('order_number')->unique();
             $table->string('reason_id')->index();
@@ -32,7 +33,6 @@ class CreateHcPaymentTable extends Migration
             $table->double('amount', 20, 6)->index();
             $table->string('currency')->nullable();
             $table->text('configuration_value')->nullable();
-            $table->uuid('invoice_id')->nullable();
 
             $table->foreign('reason_id')
                 ->references('id')
