@@ -36,6 +36,7 @@ use HoneyComb\Payments\Events\HCPaymentCompleted;
 use HoneyComb\Payments\Repositories\HCPaymentRepository;
 use HoneyComb\Payments\Services\HCMakePayseraPaymentService;
 use Illuminate\Database\Connection;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
@@ -80,10 +81,10 @@ class HCPayseraPaymentsController extends Controller
 
     /**
      * @param string $paymentId
-     * @return View
+     * @return View|RedirectResponse
      * @throws \ReflectionException
      */
-    public function cancel(string $paymentId): View
+    public function cancel(string $paymentId)
     {
         $payment = $this->paymentRepository->find($paymentId);
 
@@ -100,9 +101,9 @@ class HCPayseraPaymentsController extends Controller
 
     /**
      * @param string $paymentId
-     * @return View
+     * @return View|RedirectResponse
      */
-    public function accept(string $paymentId): View
+    public function accept(string $paymentId)
     {
         return app(config('payments.paysera.responseClass'))->acceptResponse($paymentId);
     }

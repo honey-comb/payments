@@ -38,9 +38,9 @@ interface PayseraResponseContract
 {
     /**
      * @param string $paymentId
-     * @return View
+     * @return View|RedirectResponse
      */
-    public function acceptResponse(string $paymentId): View;
+    public function acceptResponse(string $paymentId);
 
     /**
      * @param string $paymentId
