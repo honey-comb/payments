@@ -31,6 +31,7 @@ namespace HoneyComb\Payments\Paysera;
 
 use HoneyComb\Payments\Contracts\PayseraResponseContract;
 use HoneyComb\Payments\Repositories\HCPaymentRepository;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 /**
@@ -66,9 +67,9 @@ class HCPayseraResponse implements PayseraResponseContract
 
     /**
      * @param string $paymentId
-     * @return View
+     * @return View|RedirectResponse
      */
-    public function cancelResponse(string $paymentId): View
+    public function cancelResponse(string $paymentId)
     {
         $payment = $this->paymentRepository->find($paymentId);
 

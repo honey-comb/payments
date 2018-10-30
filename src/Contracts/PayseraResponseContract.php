@@ -27,6 +27,7 @@
 
 namespace HoneyComb\Payments\Contracts;
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 /**
@@ -43,7 +44,7 @@ interface PayseraResponseContract
 
     /**
      * @param string $paymentId
-     * @return View
+     * @return View|RedirectResponse
      */
-    public function cancelResponse(string $paymentId): View;
+    public function cancelResponse(string $paymentId);
 }
