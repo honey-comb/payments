@@ -19,7 +19,7 @@ class HCPaymentCreated
     /**
      * @var HCPayment
      */
-    private $payment;
+    public $payment;
 
     /**
      * HCPaymentCreated constructor.
