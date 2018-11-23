@@ -190,7 +190,7 @@ class HCMakePayseraPaymentService extends HCMakePaymentService
      */
     public function validateCallback(HCPayment $payment, array $response): void
     {
-        if ($this->convertAmountToCents((float) $response['payamount']) < $this->convertAmountToCents((float) $payment->amount, 2)) {
+        if ($this->convertAmountToCents((float) $response['amount']) < $this->convertAmountToCents((float) $payment->amount, 2)) {
             $errorMessage = trans('HCPayments::payments.message.bad_amount', ['amount' => $response['amount']]);
 
             logger()->error($errorMessage);

@@ -124,7 +124,7 @@ class HCPayseraPaymentsController extends Controller
                 $payment = $this->paymentRepository->findByOrderNumber($response['orderid']);
 
                 if (is_null($payment)) {
-                    throw new \Exception('Payment found! Order number - ' . $response['orderid']);
+                    throw new \Exception('Payment not found! Order number - ' . $response['orderid']);
                 }
 
                 if ($payment->isCanceled()) {
