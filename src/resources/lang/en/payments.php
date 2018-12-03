@@ -7,16 +7,18 @@ return [
         'canceled' => 'Canceled',
     ],
 
-    'method' => [
+    'drivers' => [
         'paysera' => 'Paysera',
         'paypal' => 'Paypal',
+        'opay' => 'OPAY',
     ],
 
     'message' => [
-        'order_already_exist' => 'Order number already exist',
+        'order_already_exist' => 'Order already exist!',
         'payment_canceled' => 'Payment canceled',
         'payment_accepted' => 'Payment accepted',
-        'bad_amount' => 'Bad amount!!',
-        'testing_enabled' => 'Testing enabled!!',
+        'bad_amount' => 'Bad amount!',
+        'testing_enabled' => 'Testing enabled!',
+        'driver_not_implemented' => 'Driver ":driver" not implemented.',
     ],
 ];

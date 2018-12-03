@@ -25,33 +25,47 @@
  * https://innovationbase.eu
  */
 
-declare(strict_types = 1);
+namespace HoneyComb\Payments\Contracts;
 
-namespace HoneyComb\Payments\Enum;
-
-use HoneyComb\Starter\Enum\Enumerable;
+use HoneyComb\Payments\DTO\HCPaymentDTO;
+use HoneyComb\Payments\DTO\HCPaymentUserDTO;
+use HoneyComb\Payments\Models\HCPayment;
+use Illuminate\Http\Response;
 
 /**
- * Class HCPaymentMethodEnum
- * @package App\Enum
+ * Interface HCPaymentManagerContract
+ * @package HoneyComb\Payments\Contracts
  */
-class HCPaymentMethodEnum extends Enumerable
+interface HCPaymentManagerContract
 {
     /**
-     * @return HCPaymentMethodEnum
-     * @throws \ReflectionException
+     * @return string
      */
-    final public static function paysera(): HCPaymentMethodEnum
-    {
-        return self::make('paysera', trans('HCPayments::payments.method.paysera'));
-    }
+    public function driver(): string;
 
     /**
-     * @return HCPaymentMethodEnum
-     * @throws \ReflectionException
+     * @param HCPaymentDTO $paymentDTO
+     * @return HCPayment
      */
-    final public static function paypal(): HCPaymentMethodEnum
-    {
-        return self::make('paypal', trans('HCPayments::payments.method.paypal'));
-    }
+    public function create(HCPaymentDTO $paymentDTO): HCPayment;
+
+    /**
+     * @param HCPayment $payment
+     * @param HCPaymentUserDTO $paymentUserDTO
+     * @return string
+     */
+    public function pay(HCPayment $payment, HCPaymentUserDTO $paymentUserDTO): string;
+
+    /**
+     * @param HCPaymentDTO $paymentDTO
+     * @param HCPaymentUserDTO $paymentUserDTO
+     * @return string
+     */
+    public function createAndPay(HCPaymentDTO $paymentDTO, HCPaymentUserDTO $paymentUserDTO): string;
+
+    /**
+     * @param array $request
+     * @return Response|null
+     */
+    public function callback(array $request): ?Response;
 }

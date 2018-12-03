@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright 2018 interactivesolutions
+ * @copyright 2018 innovationbase
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,69 +20,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * Contact InteractiveSolutions:
- * E-mail: hello@interactivesolutions.lt
- * http://www.interactivesolutions.lt
+ * Contact InnovationBase:
+ * E-mail: hello@innovationbase.eu
+ * https://innovationbase.eu
  */
 
 declare(strict_types = 1);
 
-namespace HoneyComb\Payments\Models;
+namespace HoneyComb\Payments\Enum;
 
-use HoneyComb\Starter\Models\HCUuidSoftModel;
+use HoneyComb\Starter\Enum\Enumerable;
 
 /**
- * Class HCPaymentReason
- * @package HoneyComb\Payments\Models
+ * Class HCPaymentMethodEnum
+ * @package App\Enum
  */
-class HCPaymentReason extends HCUuidSoftModel
+class HCPaymentDriverEnum extends Enumerable
 {
     /**
-     * The database table used by the model.
-     *
-     * @var string
+     * @return HCPaymentDriverEnum
+     * @throws \ReflectionException
      */
-    protected $table = 'hc_payment_reason';
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'id',
-        'translation_key',
-        'translation_key_description',
-    ];
-
-    /**
-     * @var array
-     */
-    protected $casts = [
-        'is_active' => 'boolean',
-    ];
-
-    /**
-     * @var array
-     */
-    protected $appends = [
-        'label',
-        'description',
-    ];
-
-    /**
-     * @return string
-     */
-    public function getLabelAttribute(): string
+    final public static function paysera(): HCPaymentDriverEnum
     {
-        return trans($this->translation_key);
+        return self::make('paysera', trans('HCPayments::payments.drivers.paysera'));
     }
 
     /**
-     * @return null|string
+     * @return HCPaymentDriverEnum
+     * @throws \ReflectionException
      */
-    public function getDescriptionAttribute(): ?string
+    final public static function paypal(): HCPaymentDriverEnum
     {
-        return ($this->translation_key_description) ? trans($this->translation_key_description) : null;
+        return self::make('paypal', trans('HCPayments::payments.drivers.paypal'));
+    }
+
+    /**
+     * @return HCPaymentDriverEnum
+     * @throws \ReflectionException
+     */
+    final public static function opay(): HCPaymentDriverEnum
+    {
+        return self::make('opay', trans('HCPayments::payments.drivers.opay'));
     }
 }

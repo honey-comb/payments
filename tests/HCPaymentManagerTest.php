@@ -27,52 +27,62 @@
 
 declare(strict_types = 1);
 
-namespace HoneyComb\Payments\Paysera;
+namespace Tests;
 
-use HoneyComb\Payments\Contracts\PayseraResponseContract;
-use HoneyComb\Payments\Repositories\HCPaymentRepository;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
+use HoneyComb\Payments\Contracts\HCPaymentManagerContract;
+use HoneyComb\Payments\DTO\HCPaymentUserDTO;
+use HoneyComb\Payments\Managers\HCPaymentManager;
+use HoneyComb\Payments\Models\HCPayment;
+use Illuminate\Http\Response;
 
 /**
- * Class HCPayseraResponse
- * @package HoneyComb\Payments\Paysera
+ * Class HCPaymentManagerTest
+ * @package Tests
  */
-class HCPayseraResponse implements PayseraResponseContract
+class HCPaymentManagerTest extends TestCase
 {
     /**
-     * @var HCPaymentRepository
+     * @test
      */
-    private $paymentRepository;
-
-    /**
-     * HCPayseraResponse constructor.
-     * @param HCPaymentRepository $paymentRepository
-     */
-    public function __construct(HCPaymentRepository $paymentRepository)
+    public function it_must_return_ok(): void
     {
-        $this->paymentRepository = $paymentRepository;
+        $class = $this->getTestClassInstance();
+
+        $this->assertSame(5000, $class->getCents(50.00));
+        $this->assertSame(5999, $class->getCents(59.99));
+        $this->assertSame(12313, $class->getCents(123.129));
+
+        $this->assertTrue(true);
     }
 
     /**
-     * @param string $paymentId
-     * @return View
+     * @return HCTestPaymentManager
      */
-    public function acceptResponse(string $paymentId): View
+    private function getTestClassInstance(): HCTestPaymentManager
     {
-        $payment = $this->paymentRepository->find($paymentId);
+        return $this->app->make(HCTestPaymentManager::class);
+    }
+}
 
-        return view('HCPayments::accept', ['payment' => $payment]);
+class HCTestPaymentManager extends HCPaymentManager implements HCPaymentManagerContract
+{
+    public function driver(): string
+    {
+        return 'custom';
     }
 
-    /**
-     * @param string $paymentId
-     * @return View|RedirectResponse
-     */
-    public function cancelResponse(string $paymentId)
+    public function pay(HCPayment $payment, HCPaymentUserDTO $paymentUserDTO): string
     {
-        $payment = $this->paymentRepository->find($paymentId);
+        return 'redirect_url';
+    }
 
-        return view('HCPayments::cancel', ['payment' => $payment]);
+    public function callback(array $request): ?Response
+    {
+        return response('OK', 200);
+    }
+
+    public function getCents(float $amount): int
+    {
+        return parent::getCents($amount);
     }
 }

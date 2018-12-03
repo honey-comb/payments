@@ -18,29 +18,22 @@ class CreateHcPaymentTable extends Migration
     {
         Schema::create('hc_payment', function (Blueprint $table) {
             $table->increments('count');
+            $table->uuid('id')->unique();
             $table->datetime('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->datetime('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->datetime('deleted_at')->nullable();
 
-            $table->uuid('id')->unique();
-            $table->uuid('invoice_id')->nullable();
+            $table->string('driver')->index();
             $table->enum('status', ['pending', 'completed', 'canceled'])->index();
-            $table->string('order_number')->unique();
-            $table->string('reason_id')->index();
-            $table->string('method_id')->index();
-            $table->string('payment_type')->nullable();
-            $table->string('payment_id')->nullable();
+
             $table->double('amount', 20, 6)->index();
-            $table->string('currency')->nullable();
-            $table->text('configuration_value')->nullable();
+            $table->string('currency', 3)->default('EUR');
 
-            $table->foreign('reason_id')
-                ->references('id')
-                ->on('hc_payment_reason');
+            $table->string('order_number')->unique();
+            $table->json('order')->nullable();
 
-            $table->foreign('method_id')
-                ->references('id')
-                ->on('hc_payment_method');
+            $table->string('reason')->nullable()->index();
+            $table->string('method')->nullable();
         });
     }
 

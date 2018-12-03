@@ -6,7 +6,7 @@
     },
     "formData": {},
     "adminMenu": [],
-    "seeder": "HoneyComb\\Payments\\Database\\Seeds\\HCPaymentsSeeder",
+    "seeder": "",
     "routes": [
         "Routes\/routes.payments.php"
     ],

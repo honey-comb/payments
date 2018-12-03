@@ -1,22 +1,48 @@
 <?php
 
 return [
-    'paysera' => [
-        'project_id' => env('PAYSERA_PROJECT_ID', ''),
-        'sign_password' => env('PAYSERA_SIGNATURE', ''),
+    /*
+    |--------------------------------------------------------------------------
+    | Payment currency
+    |--------------------------------------------------------------------------
+    */
+    'currency' => env('PAYMENT_CURRENCY', 'EUR'),
 
-        'lang' => env('PAYSERA_LANGUAGE_CODE', 'lit'),
-        'currency' => env('PAYSERA_CURRENCY', 'EUR'),
-        'country_code' => env('PAYSERA_COUNTRY_CODE', 'lt'),
+    /*
+    |--------------------------------------------------------------------------
+    | Payment country
+    |--------------------------------------------------------------------------
+    */
+    'country' => env('PAYMENT_COUNTRY_CODE', 'lt'),
 
-        'payment_groups' => [
-            'e-banking',
-            'e-money',
-            'other',
+    /*
+    |--------------------------------------------------------------------------
+    | Register additional drivers or override existing
+    |--------------------------------------------------------------------------
+    |
+    | 'paysera' => \HoneyComb\Payments\Managers\HCPayseraManager::class,
+    |
+    */
+    'additional_drivers' => [
+        //
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Drivers config
+    |--------------------------------------------------------------------------
+    |
+    | Set indidvidual config for each driver
+    |
+    */
+    'drivers' => [
+        'paysera' => [
+            'project_id' => env('PAYSERA_PROJECT_ID'),
+            'sign_password' => env('PAYSERA_SIGNATURE'),
+            'test' => env('PAYSERA_TEST', 1),
+            'language' => env('PAYSERA_LANGUAGE', 'LIT'),
+
+            'responseClass' => \HoneyComb\Payments\Responses\HCPayseraResponse::class,
         ],
-
-        'test' => env('PAYSERA_TEST', 1),
-
-        'responseClass' => \HoneyComb\Payments\Paysera\HCPayseraResponse::class,
     ],
 ];

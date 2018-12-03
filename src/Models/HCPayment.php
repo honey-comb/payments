@@ -31,7 +31,6 @@ namespace HoneyComb\Payments\Models;
 
 use HoneyComb\Payments\Enum\HCPaymentStatusEnum;
 use HoneyComb\Starter\Models\HCUuidSoftModel;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * Class HCPayment
@@ -53,46 +52,29 @@ class HCPayment extends HCUuidSoftModel
      */
     protected $fillable = [
         'id',
+        'driver',
         'status',
-        'reason_id',
-        'method_id',
-        'payment_type',
-        'payment_id',
         'amount',
         'currency',
-        'configuration_value',
         'order_number',
-        'invoice_id',
+        'order',
+        'reason',
+        'method',
     ];
 
     /**
      * @var array
      */
     protected $casts = [
-        'configuration_value' => 'array',
+        'order' => 'array',
+        'amount' => 'double',
     ];
-
-    /**
-     * @return HasOne
-     */
-    public function reason(): HasOne
-    {
-        return $this->hasOne(HCPaymentReason::class, 'id', 'reason_id');
-    }
-
-    /**
-     * @return HasOne
-     */
-    public function method(): HasOne
-    {
-        return $this->hasOne(HCPaymentMethod::class, 'id', 'method_id');
-    }
 
     /**
      * @return bool
      * @throws \ReflectionException
      */
-    public function IsPending(): bool
+    public function isPending(): bool
     {
         return $this->status == HCPaymentStatusEnum::pending()->id();
     }
@@ -101,7 +83,7 @@ class HCPayment extends HCUuidSoftModel
      * @return bool
      * @throws \ReflectionException
      */
-    public function IsCompleted(): bool
+    public function isCompleted(): bool
     {
         return $this->status == HCPaymentStatusEnum::completed()->id();
     }
@@ -110,7 +92,7 @@ class HCPayment extends HCUuidSoftModel
      * @return bool
      * @throws \ReflectionException
      */
-    public function IsCanceled(): bool
+    public function isCanceled(): bool
     {
         return $this->status == HCPaymentStatusEnum::canceled()->id();
     }

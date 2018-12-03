@@ -29,7 +29,12 @@ declare(strict_types = 1);
 
 namespace HoneyComb\Payments\Services;
 
+use HoneyComb\Payments\Contracts\HCPaymentManagerContract;
 use HoneyComb\Payments\Enum\HCPaymentStatusEnum;
+use HoneyComb\Payments\Events\HCPaymentCanceled;
+use HoneyComb\Payments\Events\HCPaymentCompleted;
+use HoneyComb\Payments\Managers\HCOpayManager;
+use HoneyComb\Payments\Managers\HCPayseraManager;
 use HoneyComb\Payments\Models\HCPayment;
 use HoneyComb\Payments\Repositories\HCPaymentRepository;
 
@@ -48,9 +53,8 @@ class HCPaymentService
      * HCPaymentService constructor.
      * @param HCPaymentRepository $repository
      */
-    public function __construct(
-        HCPaymentRepository $repository
-    ) {
+    public function __construct(HCPaymentRepository $repository)
+    {
         $this->repository = $repository;
     }
 
@@ -63,67 +67,76 @@ class HCPaymentService
     }
 
     /**
-     * @param float $amount
-     * @param string $currency
-     * @param string $reasonId
-     * @param string $methodId
-     * @param string $orderNumber
-     * @param string|null $paymentType
+     * @param string $paymentId
      * @return HCPayment
      * @throws \ReflectionException
      */
-    public function createPayment(
-        float $amount,
-        string $currency,
-        string $reasonId,
-        string $methodId,
-        string $orderNumber,
-        string $paymentType = null
-    ): HCPayment {
-        $payment = $this->repository
-            ->makeQuery()
-            ->where([
-                'order_number' => $orderNumber,
-            ])
-            ->first();
-
-        if ($payment) {
-            throw new \Exception(trans('HCPayments::payments.message.order_already_exist'));
-        }
-
-        return $this->repository
-            ->create([
-                'status' => HCPaymentStatusEnum::pending()->id(),
-                'amount' => $amount,
-                'currency' => $currency,
-                'method_id' => $methodId,
-                'reason_id' => $reasonId,
-                'payment_type' => $paymentType,
-                'order_number' => $orderNumber,
-            ]);
-    }
-
-    /**
-     * @param string $paymentId
-     * @param array $data
-     * @return HCPayment
-     */
-    public function updatePayment(string $paymentId, array $data = []): HCPayment
+    public function confirm(string $paymentId): HCPayment
     {
-        $payment = $this->repository->findOrFail($paymentId);
+        /** @var HCPayment $payment */
+        $payment = $this->getRepository()->findOrFail($paymentId);
 
-        $payment->update($data);
+        if ($payment->isPending()) {
+            $payment->update([
+                'status' => HCPaymentStatusEnum::completed()->id(),
+            ]);
+
+            event(new HCPaymentCompleted($payment));
+        }
 
         return $payment;
     }
 
     /**
      * @param string $paymentId
+     * @return HCPayment
+     * @throws \ReflectionException
      */
-    public function deletePayment(string $paymentId): void
+    public function cancel(string $paymentId): HCPayment
     {
-        $this->repository->makeQuery()
-            ->where(['id' => $paymentId])
-            ->delete();
+        /** @var HCPayment $payment */
+        $payment = $this->getRepository()->findOrFail($paymentId);
+
+        if ($payment->isPending()) {
+            $payment->update([
+                'status' => HCPaymentStatusEnum::canceled()->id(),
+            ]);
+
+            event(new HCPaymentCanceled($payment));
+        }
+
+        return $payment;
+    }
+
+    /**
+     * @param string $driver
+     * @return HCPaymentManagerContract
+     * @throws HCException
+     * @throws \Illuminate\Container\EntryNotFoundException
+     */
+    public function driver(string $driver): HCPaymentManagerContract
+    {
+        return app($this->getDriverClass($driver));
+    }
+
+    /**
+     * @param string $driver
+     * @return string
+     * @throws \Illuminate\Container\EntryNotFoundException
+     */
+    protected function getDriverClass(string $driver): string
+    {
+        $drivers = [
+            'paysera' => HCPayseraManager::class,
+            'opay' => HCOpayManager::class,
+        ];
+
+        $drivers = array_merge($drivers, config('payments.additional_drivers', []));
+
+        if (!array_has($drivers, $driver)) {
+            throw new HCException(trans('HCPayments::payments.message.driver_not_implemented', ['driver' => $driver]));
+        }
+
+        return $drivers[$driver];
     }
 }
