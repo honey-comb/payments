@@ -30,6 +30,7 @@ namespace HoneyComb\Payments\Managers;
 use HoneyComb\Payments\Contracts\HCPaymentManagerContract;
 use HoneyComb\Payments\DTO\HCPaymentDTO;
 use HoneyComb\Payments\DTO\HCPaymentUserDTO;
+use HoneyComb\Payments\Events\HCPaymentCreated;
 use HoneyComb\Payments\Models\HCPayment;
 use HoneyComb\Payments\Repositories\HCPaymentRepository;
 use HoneyComb\Starter\Exceptions\HCException;
@@ -88,7 +89,11 @@ abstract class HCPaymentManager implements HCPaymentManagerContract
             throw new HCException(trans('HCPayments::payments.message.order_already_exist'));
         }
 
-        return $this->paymentRepository->create($dto->toArray());
+        $payment = $this->paymentRepository->create($dto->toArray());
+
+        event(new HCPaymentCreated($payment));
+
+        return $payment;
     }
 
     /**
