@@ -269,7 +269,7 @@ class HCPaymentDTO extends HCBaseDTO
      */
     public function getOwnerableId(): ?string
     {
-        return $this->ownerable_id;
+        return $this->ownerableId;
     }
 
     /**
@@ -307,7 +307,7 @@ class HCPaymentDTO extends HCBaseDTO
      */
     public function getInvoiceId(): ?string
     {
-        return $this->invoice_id;
+        return $this->invoiceId;
     }
 
     /**
