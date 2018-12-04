@@ -29,7 +29,6 @@ declare(strict_types = 1);
 namespace HoneyComb\Payments\DTO;
 
 use HoneyComb\Starter\DTO\HCBaseDTO;
-use Illuminate\Container\EntryNotFoundException;
 
 /**
  * Class HCPaymentDTO
@@ -76,6 +75,21 @@ class HCPaymentDTO extends HCBaseDTO
      * @var array
      */
     private $order = [];
+
+    /**
+     * @var string|null
+     */
+    private $ownerableId;
+
+    /**
+     * @var string|null
+     */
+    private $ownerableType;
+
+    /**
+     * @var string|null
+     */
+    private $invoiceId;
 
     /**
      * HCPaymentDTO constructor.
@@ -149,7 +163,6 @@ class HCPaymentDTO extends HCBaseDTO
 
     /**
      * @return string
-     * @throws EntryNotFoundException
      */
     public function getCurrency(): string
     {
@@ -252,8 +265,64 @@ class HCPaymentDTO extends HCBaseDTO
     }
 
     /**
+     * @return string|null
+     */
+    public function getOwnerableId(): ?string
+    {
+        return $this->ownerable_id;
+    }
+
+    /**
+     * @param string|null $ownerableId
+     * @return HCPaymentDTO
+     */
+    public function setOwnerableId(string $ownerableId = null): HCPaymentDTO
+    {
+        $this->ownerableId = $ownerableId;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getOwnerableType(): ?string
+    {
+        return $this->ownerableType;
+    }
+
+    /**
+     * @param string|null $ownerableType
+     * @return HCPaymentDTO
+     */
+    public function setOwnerableType(string $ownerableType = null): HCPaymentDTO
+    {
+        $this->ownerableType = $ownerableType;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getInvoiceId(): ?string
+    {
+        return $this->invoice_id;
+    }
+
+    /**
+     * @param string|null $invoiceId
+     * @return HCPaymentDTO
+     */
+    public function setInvoiceId(string $invoiceId = null): HCPaymentDTO
+    {
+        $this->invoiceId = $invoiceId;
+
+        return $this;
+    }
+
+    /**
      * @return array
-     * @throws EntryNotFoundException
      */
     protected function jsonData(): array
     {
@@ -266,6 +335,9 @@ class HCPaymentDTO extends HCBaseDTO
             'reason' => $this->getReason(),
             'method' => $this->getMethod(),
             'order' => $this->getOrder(),
+            'ownerable_id' => $this->getOwnerableId(),
+            'ownerable_type' => $this->getOwnerableType(),
+            'invoice_id' => $this->getInvoiceId(),
         ];
     }
 }

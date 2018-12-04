@@ -31,6 +31,7 @@ namespace HoneyComb\Payments\Models;
 
 use HoneyComb\Payments\Enum\HCPaymentStatusEnum;
 use HoneyComb\Starter\Models\HCUuidSoftModel;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
  * Class HCPayment
@@ -60,6 +61,9 @@ class HCPayment extends HCUuidSoftModel
         'order',
         'reason',
         'method',
+        'invoice_id',
+        'ownerable_type',
+        'ownerable_id',
     ];
 
     /**
@@ -69,6 +73,14 @@ class HCPayment extends HCUuidSoftModel
         'order' => 'array',
         'amount' => 'double',
     ];
+
+    /**
+     * @return MorphTo
+     */
+    public function ownable(): MorphTo
+    {
+        return $this->morphTo();
+    }
 
     /**
      * @return bool

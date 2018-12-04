@@ -69,7 +69,6 @@ class HCPayseraController extends Controller
     /**
      * @param string $paymentId
      * @return View|RedirectResponse
-     * @throws EntryNotFoundException
      * @throws \ReflectionException
      */
     public function accept(string $paymentId)
@@ -85,7 +84,6 @@ class HCPayseraController extends Controller
     /**
      * @param string $paymentId
      * @return mixed
-     * @throws EntryNotFoundException
      * @throws \ReflectionException
      */
     public function cancel(string $paymentId)
