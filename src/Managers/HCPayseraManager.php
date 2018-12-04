@@ -73,9 +73,9 @@ class HCPayseraManager extends HCPaymentManager implements HCPaymentManagerContr
     public function pay(HCPayment $payment, HCPaymentUserDTO $paymentUserDTO): string
     {
         $data = [
-            'cancelurl' => route('payments.drivers.paysera.cancel', $payment->id),
-            'accepturl' => route('payments.drivers.paysera.accept', $payment->id),
-            'callbackurl' => route('payments.drivers.paysera.callback.get'),
+            'cancelurl' => route('payments.paysera.cancel', $payment->id),
+            'accepturl' => route('payments.paysera.accept', $payment->id),
+            'callbackurl' => route('payments.paysera.callback.get'),
 
             'projectid' => config('payments.drivers.paysera.project_id'),
             'sign_password' => config('payments.drivers.paysera.sign_password'),
