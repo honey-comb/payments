@@ -232,11 +232,9 @@ class HCPayseraManager extends HCPaymentManager implements HCPaymentManagerContr
     private function validateCallback(HCPayment $payment, array $response): void
     {
         if ($this->getCents((float)$response['amount']) < $this->getCents($payment->amount)) {
-            $errorMessage = trans('HCPayments::payments.message.bad_amount', ['amount' => $response['amount']]);
+            logger()->error($response);
 
-            logger()->error($errorMessage);
-
-            throw new HCException($errorMessage);
+            throw new HCException(trans('HCPayments::payments.message.bad_amount', ['amount' => $response['amount']]));
         }
     }
 

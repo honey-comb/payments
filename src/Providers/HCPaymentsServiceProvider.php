@@ -117,6 +117,7 @@ class HCPaymentsServiceProvider extends HCBaseServiceProvider
     private function registerLibraries(): void
     {
         require_once(__DIR__ . './../libraries/paysera/WebToPay.php');
+        require_once(__DIR__ . './../libraries/opay/opay_8.1.gateway.inc.php');
     }
 
     /**

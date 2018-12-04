@@ -77,6 +77,11 @@ class HCPaymentUserDTO extends HCBaseDTO
     private $countryCode;
 
     /**
+     * @var string|null
+     */
+    private $phone;
+
+    /**
      * @return string|null
      */
     public function getEmail(): ?string
@@ -229,6 +234,25 @@ class HCPaymentUserDTO extends HCBaseDTO
     }
 
     /**
+     * @return string|null
+     */
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    /**
+     * @param string|null $phone
+     * @return HCPaymentUserDTO
+     */
+    public function setPhone(?string $phone): HCPaymentUserDTO
+    {
+        $this->phone = $phone;
+
+        return $this;
+    }
+
+    /**
      * @return array
      */
     protected function jsonData(): array
@@ -242,6 +266,7 @@ class HCPaymentUserDTO extends HCBaseDTO
             'state' => $this->getState(),
             'zip' => $this->getZip(),
             'countryCode' => $this->getCountryCode(),
+            'phone' => $this->getPhone(),
         ];
     }
 }

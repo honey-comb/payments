@@ -28,12 +28,23 @@
 declare(strict_types = 1);
 
 Route::middleware('web')
-    ->prefix('payments/paysera')
+    ->prefix('payments')
     ->group(
         function () {
-            Route::get('cancel/{paymentId}', 'HCPayseraController@cancel')->name('payments.paysera.cancel');
-            Route::get('accept/{paymentId}', 'HCPayseraController@accept')->name('payments.paysera.accept');
-            Route::get('callback', 'HCPayseraController@callback')->name('payments.paysera.callback.get');
-            Route::post('callback', 'HCPayseraController@callback')->name('payments.paysera.callback.post');
+            Route::prefix('paysera')->group(
+                function () {
+                    Route::get('cancel/{paymentId}', 'HCPayseraController@cancel')->name('payments.paysera.cancel');
+                    Route::get('accept/{paymentId}', 'HCPayseraController@accept')->name('payments.paysera.accept');
+                    Route::get('callback', 'HCPayseraController@callback')->name('payments.paysera.callback.get');
+                    Route::post('callback', 'HCPayseraController@callback')->name('payments.paysera.callback.post');
+                }
+            );
+            Route::prefix('opay')->group(
+                function () {
+                    Route::get('accept/{paymentId}', 'HCOpayController@accept')->name('payments.opay.accept');
+                    Route::get('callback', 'HCOpayController@callback')->name('payments.opay.callback.get');
+                    Route::post('callback', 'HCOpayController@callback')->name('payments.opay.callback.post');
+                }
+            );
         }
     );
