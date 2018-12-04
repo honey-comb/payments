@@ -67,7 +67,6 @@ class HCPayseraManager extends HCPaymentManager implements HCPaymentManagerContr
      * @param HCPayment $payment
      * @param HCPaymentUserDTO $paymentUserDTO
      * @return string
-     * @throws \Illuminate\Container\EntryNotFoundException
      * @throws \WebToPayException
      */
     public function pay(HCPayment $payment, HCPaymentUserDTO $paymentUserDTO): string
@@ -106,7 +105,6 @@ class HCPayseraManager extends HCPaymentManager implements HCPaymentManagerContr
      * @param array $params
      * @return Response|null
      * @throws HCException
-     * @throws \Illuminate\Container\EntryNotFoundException
      * @throws \ReflectionException
      * @throws \WebToPayException
      */
@@ -150,7 +148,6 @@ class HCPayseraManager extends HCPaymentManager implements HCPaymentManagerContr
      * @param string|null $countryCode
      * @param array $paymentGroupsNames
      * @return array
-     * @throws \Illuminate\Container\EntryNotFoundException
      * @throws \WebToPayException
      */
     public function getPaymentMethods(
@@ -208,7 +205,6 @@ class HCPayseraManager extends HCPaymentManager implements HCPaymentManagerContr
      * @param array $request
      * @return array
      * @throws HCException
-     * @throws \Illuminate\Container\EntryNotFoundException
      * @throws \WebToPayException
      */
     private function parseParams(array $request): array

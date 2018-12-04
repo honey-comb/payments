@@ -31,7 +31,6 @@ namespace HoneyComb\Payments\Http\Controllers;
 
 use HoneyComb\Payments\Enum\HCPaymentDriverEnum;
 use HoneyComb\Payments\Services\HCPaymentService;
-use Illuminate\Container\EntryNotFoundException;
 use Illuminate\Database\Connection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;

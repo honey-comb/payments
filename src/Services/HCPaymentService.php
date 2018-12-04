@@ -112,7 +112,6 @@ class HCPaymentService
      * @param string $driver
      * @return HCPaymentManagerContract
      * @throws HCException
-     * @throws \Illuminate\Container\EntryNotFoundException
      */
     public function driver(string $driver): HCPaymentManagerContract
     {
@@ -122,7 +121,6 @@ class HCPaymentService
     /**
      * @param string $driver
      * @return string
-     * @throws \Illuminate\Container\EntryNotFoundException
      */
     protected function getDriverClass(string $driver): string
     {
