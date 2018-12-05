@@ -20,5 +20,6 @@ return [
         'bad_amount' => 'Bad amount! :amount',
         'testing_enabled' => 'Testing enabled!',
         'driver_not_implemented' => 'Driver ":driver" not implemented.',
+        'opay_payment_error' => 'OPAY Payment error',
     ],
 ];
