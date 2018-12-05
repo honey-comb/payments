@@ -88,9 +88,6 @@ class HCOpayManager extends HCPaymentManager implements HCPaymentManagerContract
             'redirect_url' => route('payments.opay.accept', $payment->id),
             'web_service_url' => route('payments.opay.callback.get'),
 
-            'web_service_url' => 'http://broomsy.local/machine_to_machine_comunication/',
-            'redirect_url' => 'http://broomsy.local/user_redirect/?payment_id=' . $payment->id,
-
             'website_id' => config('payments.drivers.opay.website_id'),
             'standard' => config('payments.drivers.opay.standard'),
             'redirect_on_success' => config('payments.drivers.opay.redirect_on_success'),
