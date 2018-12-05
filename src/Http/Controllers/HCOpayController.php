@@ -78,7 +78,7 @@ class HCOpayController extends Controller
         }
 
         // TODO maybe move to opay response class? but for now it's the same as paysera
-        return app(config('payments.drivers.paysera.responseClass'))->acceptResponse($paymentId);
+        return app(config('payments.drivers.opay.responseClass'))->acceptResponse($paymentId);
     }
 
     /**

@@ -45,6 +45,6 @@ return [
         'bad_amount' => 'Neteisinga suma! :amount',
         'testing_enabled' => 'Testavimo aplinka įjungta!',
         'driver_not_implemented' => 'Driveris ":driver" neimplementuotas.',
-        'opay_payment_error' => 'OPAY Mokėimo klaida',
+        'opay_payment_error' => 'OPAY Mokėjimo klaida',
     ],
 ];
