@@ -85,6 +85,7 @@ class HCPayseraManager extends HCPaymentManager implements HCPaymentManagerContr
             'country' => config('payments.country'),
             'lang' => config('payments.drivers.paysera.language'),
             'payment' => $payment->method,
+            'paytext' => $paymentUserDTO->getPaytext(),
 
             'test' => config('payments.drivers.paysera.test'),
 
