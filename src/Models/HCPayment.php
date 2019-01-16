@@ -79,7 +79,7 @@ class HCPayment extends HCUuidSoftModel
      */
     public function ownable(): MorphTo
     {
-        return $this->morphTo();
+        return $this->morphTo('ownerable');
     }
 
     /**
